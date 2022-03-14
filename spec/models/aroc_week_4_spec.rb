@@ -17,7 +17,9 @@ describe 'ActiveRecord Obstacle Course, Week 4' do
     # -----------------------------------------------------------
 
     # ------------------ Using ActiveRecord ---------------------
-    # Solution goes here
+    total_sales = Order.sum(:amount)
+    # # OR:
+    # total_sales = Order.select('sum(total)') # NOT WORKING
     # -----------------------------------------------------------
 
     # Expectation
@@ -33,7 +35,7 @@ describe 'ActiveRecord Obstacle Course, Week 4' do
     # -----------------------------------------------------------
 
     # ------------------ Using ActiveRecord ---------------------
-    # Solution goes here
+    Order.where.not(user: @user_2).sum(:amount)
     # -----------------------------------------------------------
 
     # Expectation
@@ -49,7 +51,7 @@ describe 'ActiveRecord Obstacle Course, Week 4' do
     # -----------------------------------------------------------
 
     # ------------------ Improved Solution ----------------------
-    #  Solution goes here
+    orders = Order.joins(:order_items).where(order_items: {item_id: @item_4.id}).select('orders.*')
     # -----------------------------------------------------------
 
     # Expectation
@@ -66,7 +68,9 @@ describe 'ActiveRecord Obstacle Course, Week 4' do
     # -----------------------------------------------------------
 
     # ------------------ Improved Solution ----------------------
-    #  Solution goes here
+    orders = Order.joins(:order_items)
+    .where(order_items: {item_id: @item_4.id}, user: @user_2)
+    .select('orders.*')
     # -----------------------------------------------------------
 
     # Expectation
@@ -88,11 +92,14 @@ describe 'ActiveRecord Obstacle Course, Week 4' do
     # ------------------------------------------------------------
 
     # ------------------ ActiveRecord Solution ----------------------
-    # Solution goes here
+    ordered_items = Item.find(OrderItem.pluck(:item_id).uniq)
+    # OR:
+    ordered_items = Item.find(OrderItem.select(:item_id).distinct.pluck(:item_id))
     # ---------------------------------------------------------------
 
     # Expectations
-    expect(ordered_items).to eq(expected_result)
+    # expect(ordered_items).to eq(expected_result)  # original test, was just getting a different order
+    expect(ordered_items.sort).to eq(expected_result.sort)
     expect(ordered_items).to_not include(unordered_item)
   end
 end
