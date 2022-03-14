@@ -27,7 +27,20 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    # Solution goes here
+    users = Order.joins(:user, :order_items)
+    .where('order_items.item_id = ?', @item_8.id)
+    .distinct
+    .pluck(:name)
+    # OR:
+    users = User.joins(:orders, :order_items)
+    .where(order_items: {item_id: @item_8.id})
+    .distinct
+    .pluck(:name)
+    # OR:
+    users = User.order(:name)
+    .find(@item_8.orders.pluck(:user_id))
+    .pluck(:name)
+
     # ------------------------------------------------------------
 
     # Expectation
@@ -42,7 +55,9 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    # Solution goes here
+    names = Order.find(@order_12.id).items.pluck(:name)
+    # OR:
+    names = Order.last.items.pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -66,7 +81,9 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    # Solution goes here
+    items_for_user_3_third_order = @user_3.orders.order(:created_at)[2].items.pluck(:name)
+    # OR:
+    items_for_user_3_third_order = Order.where('user_id = ?', @user_3.id).limit(3).last.items.pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -79,7 +96,7 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
     # -----------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    # Solution goes here
+    average = Order.average(:amount)
     # ------------------------------------------------------------
 
     # Expectation
@@ -96,7 +113,11 @@ describe 'ActiveRecord Obstacle Course, Week 3' do
     # -----------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
-    # Solution goes here
+    average = @user_3.orders.average(:amount)
+    # OR:
+    average = Order.where('user_id = ?', @user_3.id).average(:amount)
+    # OR:
+    average = Order.where(user_id: @user_3.id).average(:amount)
     # ------------------------------------------------------------
 
     # Expectation

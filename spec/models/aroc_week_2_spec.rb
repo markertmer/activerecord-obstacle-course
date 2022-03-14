@@ -20,6 +20,8 @@ describe 'ActiveRecord Obstacle Course, Week 2' do
 
     # ------------------ Using ActiveRecord ----------------------
     orders_of_user_3 = Order.where(user_id: @user_3.id)
+    # OR:
+    orders_of_user_3 = Order.where('user_id = ?', @user_3.id)
     # ------------------------------------------------------------
 
     # Expectation
@@ -39,6 +41,8 @@ describe 'ActiveRecord Obstacle Course, Week 2' do
 
     # ------------------ Using ActiveRecord ----------------------
     orders = Order.order(amount: :desc)
+    # OR:
+    orders = Order.all.order(amount: :desc)
     # ------------------------------------------------------------
 
     # Expectation
@@ -58,6 +62,8 @@ describe 'ActiveRecord Obstacle Course, Week 2' do
 
     # ------------------ Using ActiveRecord ----------------------
     orders = Order.order(:amount)
+    # OR:
+    orders = Order.all.order(amount: :asc)
     # ------------------------------------------------------------
 
     # Expectation
@@ -93,7 +99,10 @@ describe 'ActiveRecord Obstacle Course, Week 2' do
 
     # ------------------ Using ActiveRecord ----------------------
     grouped_items = Order.find(@order_3.id).items.order(:name)
-    # NO WORKING: grouped_items = Order.where(id: 3).joins(:items).select('items.*').order(:name)
+    # OR:
+    grouped_items = Order.where(id: @order_3.id).first.items.order(:name)
+    # OR:
+    grouped_items = Order.where(id: @order_3.id)[0].items.order(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -104,11 +113,13 @@ describe 'ActiveRecord Obstacle Course, Week 2' do
     expected_result = ['Abercrombie', 'Banana Republic', 'Calvin Klein', 'Dickies', 'Eddie Bauer', 'Fox', 'Giorgio Armani', 'Hurley', 'Izod', 'J.crew']
 
     # ----------------------- Using Ruby -------------------------
-    names = Item.all.map(&:name)
+    # names = Item.all.map(&:name)
     # ------------------------------------------------------------
 
     # ------------------ Using ActiveRecord ----------------------
     names = Item.pluck(:name)
+    # OR:
+    names = Item.all.pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
@@ -146,6 +157,10 @@ describe 'ActiveRecord Obstacle Course, Week 2' do
 
     # ------------------ Using ActiveRecord ----------------------
     names = Order.joins(:items).pluck('items.name')
+    # OR:
+    names = Order.joins(:items).pluck(:name)
+    # OR:
+    names = Order.all.joins(:items).pluck(:name)
     # ------------------------------------------------------------
 
     # Expectation
